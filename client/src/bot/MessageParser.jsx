@@ -65,6 +65,7 @@ const MessageParser = ({ children, actions }) => {
     } else if (message === 'hi') {
       actions.handleHi(state);
 
+
     } else if (state.helloTriggered && !state.username) {
       actions.storeUsername(state, message);
 
@@ -87,8 +88,6 @@ const MessageParser = ({ children, actions }) => {
     } else if (message.includes(`rude`)) {
       actions.handleRude(state);
 
-    } else if (message.includes(`?`)) {
-      actions.handleQuestion(state, message);
 
     } else if (message.includes('howdy') || message.includes('hey')) {
       actions.handleHello(state);
@@ -104,6 +103,8 @@ const MessageParser = ({ children, actions }) => {
 
     // If it doesn't hit one of these triggers, it loops through a bank of actions
     // This is much less code, but it doesn't allow for multiple keywords to trigger the same action. Each keyword needs to have its own action, because this little algorithm uses the "includes" method to check the message against an array of keywords, then uses my stolen "actionConverter" function to convert the keyword to an action function call. It's pretty neat, but it's ridgid.
+    } else if (message.includes(`?`)) {
+      actions.handleQuestion(state, message);
     } else {
       for (const action of botActions) {
         if (message.includes(action)) {

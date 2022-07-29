@@ -2,6 +2,8 @@ import React from 'react';
 // import { useState, useEffect } from 'react';
 import delayMessage from './components/DelayMessage/delayMessage.js';
 import botActions from './components/BotActions/botActions.js';
+import createChatBotMessageChain from './components/BotMessageChain/createBotMessageChain.js';
+import help from './components/Help/help.js';
 
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 
@@ -11,37 +13,39 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
     // Use this function as a template for a bot action
     // We can pass things into the action handlers, and the action handlers can use those things to trigger different logic.
     // For example, if we pass in the user's message, we can use that to trigger different actions.
-    console.log("handleTest: message", message); // The message is used to trigger different test actions.
-    console.log("handleTest: state", state); // We don't need to pass the state in, it's already available in the ActionProvider component scope.
+    console.log("handleTest: message:", message); // The message is used to trigger different test actions.
+    console.log("handleTest: state:", state); // We don't need to pass the state in, it's already available in the ActionProvider component scope.
     // console.log("handleTest: setState:" , setState);
 
     // Here's an example of how to trigger a bot action mased on user message. Typing "test help" will trigger the handleTest function to log the current state of the helpTriggered state variable
     // Try typing "test help" in the chatbot's input field, then "help", then "test help" again and look at the console output
+
+    // TEST METHODS:
     if (message.includes('help')) {
-      let botMessage = createChatBotMessage("Testing help");
-      console.log("handleTest: help: helpTriggered:", state.helpTriggered);
-      setState((prev) => ({
-        ...prev,
-        messages: [...prev.messages, botMessage],
-        testCount: prev.testCount + 1
-      }));
+      // this.handleHelp(state)
+      help(state, setState);
+    } else if (message.includes('chain')) {
+      createChatBotMessageChain(state, ['test', 'test', 'test'], setState);
+    } else if (message.includes('delay')) {
+      delayMessage("delay", 1000, setState);
     }
 
-    if (state.testTriggered) { // calls to this action will read the state and respond accordingly
-      let botMessage = createChatBotMessage(`Test message ${state.testCount + 1}`); // displays the number of times the user has triggered this action
+    if (state.testTriggered) { // You can trigger certain actions based on the internal state of the Chatbot app.
+      let botMessage = createChatBotMessage(`Test message ${state.testCount + 1}`); // Displays the number of times the user has triggered this action in a botMessage
       setState((prev) => ({
         ...prev,
         messages: [...prev.messages, botMessage],
         testCount: prev.testCount + 1 // increment the testCount on each subsequent invocation
       }));
 
-    } else { // The first invocation of this action sets up the state values here
+    } else { // Always put the first invocation at the end of the if/else chain.
       let botMessage = createChatBotMessage(`Test message 1`);
-      setState((prev) => ({
-        ...prev,
-        messages: [...prev.messages, botMessage],
-        testTriggered: true,
-        testCount: 1
+      setState((prev) => ({ // Set any initial state values here on the initial invocation of the action.
+        ...prev, // ...prev is the previous state
+        messages: [...prev.messages, botMessage], // Add the botMessage to the messages array
+        testTriggered: true, // You can set booleans to help track what's happened and trigger certain events.
+        testCount: 1, // You can set counts to track how many times the action has been triggered.
+        testMessage: message, // You can set any other state values here. This sets the testMessage state variable to the user's message passed into the action call inside the MessageParser component.
       }));
     }
   }
@@ -85,6 +89,18 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
       }))
     } else if (message.includes('secret')) {
       let botMessage = createChatBotMessage(`I know many secrets...`);
+      setState((prev) => ({
+        ...prev,
+        messages: [...prev.messages, botMessage]
+      }))
+    } else if (message.includes('know')) {
+      let botMessage = createChatBotMessage(`I know a lot of things. Try asking me questions, or try typing "help".`);
+      setState((prev) => ({
+        ...prev,
+        messages: [...prev.messages, botMessage]
+      }))
+    } else {
+      let botMessage = createChatBotMessage(`I'm sorry, I don't understand. Try rephrasing your question.`);
       setState((prev) => ({
         ...prev,
         messages: [...prev.messages, botMessage]
@@ -245,7 +261,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 
     setState((prev) => ({
       ...prev,
-      messages: [...prev.messages, botMessage],
+      messages: [botMessage],
     }));
   };
 
@@ -257,7 +273,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
       messages: [...prev.messages, botMessage],
     }));
 
-    delayMessage('How are you?', 1000, setState);
+    // delayMessage('How are you?', 1000, setState);
   };
 
   const handleCaroline = (state) => {
