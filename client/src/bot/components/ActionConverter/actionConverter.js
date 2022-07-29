@@ -1,5 +1,5 @@
 function actionConverter(option) {
-  console.log("actionConverter: ", option);
+  // console.log("actionConverter: input: ", option); //debugging
   if (option.includes(' ')) {
     option.replace(' ', '');
   }
@@ -13,7 +13,7 @@ function actionConverter(option) {
     });
   }
   let action = capitalizeFirstLetter(camelize(capitalizeFirstLetter(option)));
-  console.log('action: ', action)
+  console.log('actionConverter: action from input: handle' + action)
   return 'handle' + action
 }
 

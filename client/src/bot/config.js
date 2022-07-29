@@ -16,15 +16,17 @@ const config = {
       "Type something in the box below to start chatting with me.",
       {
         withAvatar: false,
-        delay: 500,
+        delay: 1000,
       }
     ),
     createCustomMessage('Test', 'custom'),
   ],
   state: {
-    myCustomProperty: 'myCustomValue'
+    // Set initial values for the internal app state here.
+    userMessages: [],
+    botName: botName,
   },
-  botName: botName,
+  // botName: botName, // This sets the display name of the bot. It's optional, the default is just "Bot".
   botAvatar: "https://i.imgur.com/QQO0ZYb.png",
   // botAvatar: "https://picsum.photos/200",
   customStyles: {
